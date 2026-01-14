@@ -194,45 +194,59 @@
 						renderRecipients();
 					} catch (e) {
 						console.warn('No se pudieron cargar destinatarios guardados', e);
-						document.getElementById('saveRecipientsBtn').addEventListener('click', function() {
-					});
-
-					// Asegura que el campo oculto destinatarios esté actualizado antes de enviar el formulario principal
-					document.getElementById('contactForm').addEventListener('submit', function(e) {
-						updateHiddenRecipients();
-							if (recipients.length === 0) {
-								alert('Debe agregar al menos un destinatario antes de guardar.');
-								return;
-							}
-							const key = 'formularios_destinatarios_' + (benefitName || '');
-							localStorage.setItem(key, recipients.join(','));
-							updateHiddenRecipients();
-							$('#recipientModal').modal('hide');
-						});
+					}
+				}
+			}
+		})
 		.catch(error => {
-			console.error('Error:', error);
+			console.error('Error al obtener nombre de página:', error);
 		});
 
+	// Asegura que el campo oculto destinatarios esté actualizado antes de enviar el formulario principal
+	document.getElementById('contactForm').addEventListener('submit', function(e) {
+		updateHiddenRecipients();
+		if (recipients.length === 0) {
+			alert('Debe agregar al menos un destinatario antes de enviar.');
+			e.preventDefault();
+			return;
+		}
+		const key = 'formularios_destinatarios_' + (benefitName || '');
+		localStorage.setItem(key, recipients.join(','));
+		updateHiddenRecipients();
+	});
+
 	// Llamar al MVCResourceCommand para obtener los datos del usuario
+	console.log('URL de getUserData:', '<%= getUserDataURL %>');
 	fetch('<%= getUserDataURL %>')
-		.then(response => response.json())
+		.then(response => {
+			console.log('Response status:', response.status);
+			console.log('Response ok:', response.ok);
+			if (!response.ok) {
+				throw new Error('HTTP error, status=' + response.status);
+			}
+			return response.json();
+		})
 		.then(data => {
+			console.log('Datos recibidos:', data);
 			if (data.success) {
 				// Mostrar el screenName
+				console.log('Actualizando con screenName:', data.screenName);
 				document.getElementById('screenNameDisplay').textContent = data.screenName;
 				
-				// Llenar los campos de email y nombre si deseas
-				document.getElementById('emailFuncionario').value = data.email;
-				document.getElementById('nombreApellido').value = data.fullName;
+				// Llenar los campos de email y nombre
+				document.getElementById('emailFuncionario').value = data.email || '';
+				document.getElementById('nombreApellido').value = data.fullName || '';
 				document.getElementById('dependencia').value = data.dependencia || '';
+				
+				console.log('Datos cargados exitosamente');
 			} else {
-				document.getElementById('screenNameDisplay').textContent = 'Error al cargar datos';
-				console.error('Error:', data.error);
+				document.getElementById('screenNameDisplay').textContent = 'Error: ' + (data.error || 'Error desconocido');
+				console.error('Error en respuesta:', data.error);
 			}
 		})
 		.catch(error => {
 			document.getElementById('screenNameDisplay').textContent = 'Error de conexión';
-			console.error('Error:', error);
+			console.error('Error al obtener datos del usuario:', error);
 		});
 
 	// Helpers destinatarios
@@ -241,7 +255,6 @@
 		list.innerHTML = '';
 		if (!recipients.length) {
 			list.innerHTML = '<span class="text-muted">Sin destinatarios</span>';
-			document.getElementById('selectedCount').textContent = '0';
 			return;
 		}
 		recipients.forEach((email, idx) => {
@@ -256,12 +269,10 @@
 				recipients.splice(idx, 1);
 				renderRecipients();
 				updateHiddenRecipients();
-				renderFuncionariosTable();
 			};
 			badge.appendChild(removeBtn);
 			list.appendChild(badge);
 		});
-		document.getElementById('selectedCount').textContent = recipients.length;
 	}
 
 	function updateHiddenRecipients() {
@@ -280,7 +291,6 @@
 			recipients.push(val);
 			renderRecipients();
 			updateHiddenRecipients();
-			renderFuncionariosTable();
 		}
 	}
 
@@ -288,12 +298,10 @@
 		(text || '').split(',').forEach(t => addRecipient(t));
 	}
 
-
 	// Solo gestión de destinatarios manuales
 	$('#recipientModal').on('show.bs.modal', function () {
 		renderRecipients();
 	});
-
 
 	document.getElementById('addRecipientBtn').addEventListener('click', function() {
 		addRecipient(document.getElementById('recipientInput').value);
