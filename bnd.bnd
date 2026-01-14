@@ -1,0 +1,7 @@
+Bundle-Name: formulariosweb
+Bundle-SymbolicName: cl.cgr.formulariosweb
+Bundle-Version: 1.0.0
+Export-Package: cl.cgr.formulariosweb.constants
+Provide-Capability:\
+	liferay.language.resources;\
+		resource.bundle.base.name="content.Language"
