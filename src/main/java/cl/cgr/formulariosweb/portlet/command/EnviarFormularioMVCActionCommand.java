@@ -74,8 +74,6 @@ public class EnviarFormularioMVCActionCommand extends BaseMVCActionCommand {
 			System.out.println("================================================================================");
 			return;
 		}
-
-		// Construir cuerpo del email
 		String cuerpo = "<!DOCTYPE html>" +
 			"<html>" +
 			"<head>" +

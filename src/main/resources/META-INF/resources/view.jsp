@@ -22,6 +22,34 @@
 
 				<div class="card-body">
 
+					<%
+						// Mostrar mensaje de éxito o error después del envío
+						String success = renderRequest.getParameter("success");
+						String error = renderRequest.getParameter("error");
+						
+						if ("true".equals(success)) {
+					%>
+						<div class="alert alert-success alert-dismissible fade show" role="alert">
+							<strong><i class="fa fa-check-circle"></i> ¡Éxito!</strong> 
+							El formulario ha sido enviado correctamente.
+							<button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+					<%
+						} else if (error != null && !error.trim().isEmpty()) {
+					%>
+						<div class="alert alert-danger alert-dismissible fade show" role="alert">
+							<strong><i class="fa fa-exclamation-triangle"></i> Error:</strong> 
+							<%= error %>
+							<button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+					<%
+						}
+					%>
+
 					<% 
 						// Solo mostrar destinatarios configurados a usuarios Administradores
 						boolean isAdmin = themeDisplay.getPermissionChecker().isOmniadmin();

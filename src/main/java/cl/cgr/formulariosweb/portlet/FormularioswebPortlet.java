@@ -64,6 +64,7 @@ public class FormularioswebPortlet extends MVCPortlet {
 		if (destinatarios == null || destinatarios.isEmpty()) {
 			System.out.println("[WARN] ERROR: No hay destinatarios configurados!");
 			System.out.println("====================================");
+			actionResponse.setRenderParameter("error", "No hay destinatarios configurados");
 			return;
 		}
 
@@ -82,6 +83,7 @@ public class FormularioswebPortlet extends MVCPortlet {
 		String[] destinatariosArray = destinatarios.split(",");
 		System.out.println("Total de destinatarios a procesar: " + destinatariosArray.length);
 
+		boolean envioExitoso = true;
 		for (String destinatario : destinatariosArray) {
 			String destinatarioTrimmed = destinatario.trim();
 			System.out.println("Enviando correo a: [" + destinatarioTrimmed + "]");
@@ -91,8 +93,16 @@ public class FormularioswebPortlet extends MVCPortlet {
 			} catch (Exception e) {
 				System.out.println("✗ Error al enviar a " + destinatarioTrimmed + ": " + e.getMessage());
 				e.printStackTrace();
+				envioExitoso = false;
 			}
 		}
 		System.out.println("====================================\n");
+		
+		// Patrón POST-Redirect-GET: establece parámetros de render para evitar reenvío al actualizar
+		if (envioExitoso) {
+			actionResponse.setRenderParameter("success", "true");
+		} else {
+			actionResponse.setRenderParameter("error", "Algunos correos no pudieron ser enviados");
+		}
 	}
 }
