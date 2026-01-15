@@ -4,7 +4,7 @@
 <%
 	PortletPreferences prefs = renderRequest.getPreferences();
 	String destinatariosEmail = prefs.getValue("destinatariosEmail", "");
-	System.out.println("DEBUG - Destinatarios leídos de preferencias: [" + destinatariosEmail + "]");
+	String asuntoEmail = prefs.getValue("asuntoEmail", "");
 %>
 
 <portlet:resourceURL id="/formularios/getUserData" var="getUserDataURL" />
@@ -15,120 +15,188 @@
 	<div class="row">
 		<div class="col-md-8 offset-md-2">
 			<div class="card">
-				<div class="card-header d-flex justify-content-between align-items-center" style="background-color:#1b1f49; color:white;">
+				<div class="card-header d-flex justify-content-between align-items-center"
+					 style="background-color:#1b1f49; color:white;">
 					<h4 class="mb-0">Formulario de Contacto - Solicitud de Beneficios</h4>
+				</div>
+
+				<div class="card-body">
+
 					<%
-						com.liferay.portal.kernel.model.Role adminRole = null;
-						boolean isAdmin = false;
-						try {
-							adminRole = com.liferay.portal.kernel.service.RoleLocalServiceUtil.getRole(themeDisplay.getCompanyId(), "Administrator");
-							isAdmin = com.liferay.portal.kernel.service.UserLocalServiceUtil.hasRoleUser(adminRole.getRoleId(), themeDisplay.getUserId());
-						} catch (Exception e) {
-							// Si hay error, no mostrar el botón
+						// Mostrar mensaje de éxito o error después del envío
+						String success = renderRequest.getParameter("success");
+						String error = renderRequest.getParameter("error");
+						
+						if ("true".equals(success)) {
+					%>
+						<div class="alert alert-success alert-dismissible fade show" role="alert">
+							<strong><i class="fa fa-check-circle"></i> ¡Éxito!</strong> 
+							El formulario ha sido enviado correctamente.
+							<button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+					<%
+						} else if (error != null && !error.trim().isEmpty()) {
+					%>
+						<div class="alert alert-danger alert-dismissible fade show" role="alert">
+							<strong><i class="fa fa-exclamation-triangle"></i> Error:</strong> 
+							<%= error %>
+							<button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+					<%
 						}
 					%>
-					<% if (isAdmin) { %>
-						<button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#recipientModal">
-							<i class="fa fa-cog"></i> Destinatario
-						</button>
-					<% } %>
-				</div>
-				<div class="card-body">
-					<% if (destinatariosEmail != null && !destinatariosEmail.trim().isEmpty()) { %>
+
+					<% 
+						// Solo mostrar destinatarios configurados a usuarios Administradores
+						boolean isAdmin = themeDisplay.getPermissionChecker().isOmniadmin();
+						if (isAdmin && destinatariosEmail != null && !destinatariosEmail.trim().isEmpty()) { 
+					%>
 						<div class="alert alert-info mb-3" role="alert">
-							<strong><i class="fa fa-envelope"></i> Destinatarios configurados:</strong> 
+							<strong><i class="fa fa-envelope"></i> Destinatarios configurados:</strong>
 							<%= destinatariosEmail %>
 						</div>
 					<% } %>
-					<form id="contactForm" method="POST" action="<portlet:actionURL name='enviarFormulario' />">
-						<!-- DATOS DEL FUNCIONARIO -->
+
+					<form id="contactForm"
+						  method="POST"
+						  action="<portlet:actionURL name='enviarFormulario' />">
+
+						<!-- ================= DATOS DEL FUNCIONARIO ================= -->
 						<fieldset class="mb-4">
 							<legend class="border-bottom pb-2 mb-3">
 								<h5>Datos del Funcionario</h5>
-								<small class="text-muted d-block mt-1">Usuario: <strong id="screenNameDisplay">Cargando...</strong></small>
+								<small class="text-muted d-block mt-1">
+									Usuario: <strong id="screenNameDisplay">Cargando...</strong>
+								</small>
 							</legend>
-							
+
 							<div class="form-group">
-								<label for="nombreApellido">Nombre y Apellido <span class="text-danger">*</span></label>
-								<input type="text" class="form-control" id="nombreApellido" name="nombreApellido" placeholder="Ingrese su nombre y apellido" required readonly>
+								<label for="nombreApellido">
+									Nombre y Apellido <span class="text-danger">*</span>
+								</label>
+								<input type="text"
+									   class="form-control"
+									   id="nombreApellido"
+									   name="<portlet:namespace />nombreApellido"
+									   placeholder="Ingrese su nombre y apellido">
 							</div>
 
 							<div class="form-group">
-								<label for="emailFuncionario">Email <span class="text-danger">*</span></label>
-								<input type="email" class="form-control" id="emailFuncionario" name="emailFuncionario" placeholder="correo@ejemplo.com" required readonly>
+								<label for="emailFuncionario">
+									Email <span class="text-danger">*</span>
+								</label>
+								<input type="email"
+									   class="form-control"
+									   id="emailFuncionario"
+									   name="<portlet:namespace />emailFuncionario"
+									   placeholder="correo@ejemplo.com">
 							</div>
 
 							<div class="form-group">
-								<label for="dependencia">Dependencia<span class="text-danger">*</span></label>
-								<input type="text" class="form-control" id="dependencia" name="dependencia" placeholder="Ingrese su dependencia" required readonly>
+								<label for="dependencia">
+									Dependencia <span class="text-danger">*</span>
+								</label>
+								<input type="text"
+									   class="form-control"
+									   id="dependencia"
+									   name="<portlet:namespace />dependencia"
+									   placeholder="Ingrese su dependencia">
 							</div>
 
-							<!-- Campo oculto para destinatarios seleccionados -->
-							<input type="hidden" id="destinatarios" name="destinatarios" value="<%= destinatariosEmail %>">
+							<!-- Hidden -->
+							<input type="hidden"
+								   id="destinatarios"
+								   name="<portlet:namespace />destinatarios"
+								   value="<%= destinatariosEmail %>">
 						</fieldset>
 
-						<!-- DATOS DE LA SOLICITUD -->
+						<!-- ================= DATOS DE LA SOLICITUD ================= -->
 						<fieldset class="mb-4">
 							<legend class="border-bottom pb-2 mb-3">
 								<h5>Datos de la Solicitud</h5>
 							</legend>
-							
+
 							<div class="form-group">
-								<label for="asunto">Asunto <span class="text-danger">*</span></label>
-								<input type="text" class="form-control" id="asunto" name="asunto" placeholder="Ingrese el asunto de la solicitud" required readonly>
+								<label for="asunto">
+									Asunto <span class="text-danger">*</span>
+								</label>
+								<input type="text"
+									   class="form-control"
+									   id="asunto"
+									   name="<portlet:namespace />asunto"
+									   placeholder="Ingrese el asunto de la solicitud"
+									   value="<%= asuntoEmail %>">
 							</div>
 
 							<div class="form-group">
-								<label for="descripcion">Descripción <span class="text-danger">*</span></label>
-								<textarea class="form-control" id="descripcion" name="descripcion" rows="5" placeholder="Describa detalladamente su solicitud" required></textarea>
+								<label for="descripcion">
+									Descripción <span class="text-danger">*</span>
+								</label>
+								<textarea class="form-control"
+										  id="descripcion"
+										  name="<portlet:namespace />descripcion"
+										  rows="5"
+										  placeholder="Describa detalladamente su solicitud"
+										  required></textarea>
 							</div>
 						</fieldset>
 
-						<!-- DATOS DE CONTACTO -->
+						<!-- ================= DATOS DE CONTACTO ================= -->
 						<fieldset class="mb-4">
 							<legend class="border-bottom pb-2 mb-3">
 								<h5>Datos de Contacto</h5>
 							</legend>
-							<!--
-							<div class="form-group">
-								<label for="telefonoCelular">Teléfono Celular <span class="text-muted">(Opcional)</span></label>
-								<input type="tel" class="form-control" id="telefonoCelular" name="telefonoCelular" placeholder="Número de celular">
-							</div>
-							-->
+
 							<div class="form-group">
 								<label for="telefonoCelular">
 									Teléfono Celular <span class="text-muted">(Opcional)</span>
 								</label>
-
 								<div class="input-group">
 									<span class="input-group-text">+56 9</span>
 									<input type="tel"
-										class="form-control"
-										id="telefonoCelular"
-										name="telefonoCelular"
-										placeholder="Ingrese su número celular (8 dígitos)"
-										pattern="[0-9]{8}"
-										maxlength="8"
-										title="Ingrese su número (8 dígitos)">
+										   class="form-control"
+										   id="telefonoCelular"
+										   name="<portlet:namespace />telefonoCelular"
+										   placeholder="Ingrese su número celular (8 dígitos)"
+										   pattern="[0-9]{8}"
+										   maxlength="8">
 								</div>
-							</div>
-							<div class="form-group">
-								<label for="telefonoParticular">Teléfono Particular <span class="text-muted">(Opcional)</span></label>
-								<input type="tel" class="form-control" id="telefonoParticular" name="telefonoParticular" placeholder="Número de teléfono" maxlength="8">
 							</div>
 
 							<div class="form-group">
-								<label for="emailParticular">Email Particular <span class="text-muted">(Opcional)</span></label>
-								<input type="email" class="form-control" id="emailParticular" name="emailParticular" placeholder="correo.particular@ejemplo.com">
+								<label for="telefonoParticular">
+									Teléfono Particular <span class="text-muted">(Opcional)</span>
+								</label>
+								<input type="tel"
+									   class="form-control"
+									   id="telefonoParticular"
+									   name="<portlet:namespace />telefonoParticular"
+									   maxlength="8">
+							</div>
+
+							<div class="form-group">
+								<label for="emailParticular">
+									Email Particular <span class="text-muted">(Opcional)</span>
+								</label>
+								<input type="email"
+									   class="form-control"
+									   id="emailParticular"
+									   name="<portlet:namespace />emailParticular">
 							</div>
 						</fieldset>
 
-						<!-- BOTÓN ENVIAR -->
 						<div class="form-group text-center mt-4">
-							<button type="submit" class="btn" style="background-color:#1b1f49; color:white;" btn-lg>
+							<button type="submit"
+									class="btn"
+									style="background-color:#1b1f49; color:white;">
 								<i class="fa fa-paper-plane"></i> Enviar
 							</button>
 						</div>
+
 					</form>
 				</div>
 			</div>
@@ -136,199 +204,82 @@
 	</div>
 </div>
 
-<!-- Modal Destinatarios -->
-<div class="modal fade" id="recipientModal" tabindex="-1" role="dialog" aria-labelledby="recipientModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-lg" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="recipientModalLabel">Seleccionar destinatarios</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<!-- Tabs -->
-				<ul class="nav nav-tabs mb-3" role="tablist">
-					<li class="nav-item">
-						<a class="nav-link active" id="manual-tab" data-toggle="tab" href="#manualPane" role="tab">Ingreso</a>
-					</li>
-				</ul>
 
-				<div class="tab-content">
-					<div class="tab-pane fade show active" id="manualPane" role="tabpanel">
-						<p>Agrega correos manualmente.</p>
-						<div class="input-group mb-3">
-							<input type="email" class="form-control" id="recipientInput" placeholder="correo@ejemplo.com">
-							<div class="input-group-append">
-								<button class="btn btn-outline-secondary" type="button" id="addRecipientBtn">Agregar</button>
-							</div>
-						</div>
-
-						<div class="form-group mt-2">
-							<label for="recipientBulk">Ingresar múltiples (separados por coma)</label>
-							<textarea class="form-control" id="recipientBulk" rows="2" placeholder="correo1@ejemplo.com, correo2@ejemplo.com"></textarea>
-							<button class="btn btn-link p-0 mt-1" type="button" id="addBulkBtn">Agregar todos</button>
-						</div>
-
-						<div id="recipientList" class="mb-2"></div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-				<button type="button" class="btn btn-primary" id="saveRecipientsBtn">Guardar</button>
-			</div>
-		</div>
-	</div>
-</div>
 
 <script>
-	let benefitName = '';
-	let recipients = [];
-	// let allFuncionarios = [];	
+	console.log('========== SCRIPT INICIADO ==========');
 
-	// Obtener el nombre de la página (beneficio)
-	fetch('<%= getPageNameURL %>')
-		.then(response => response.json())
-		.then(data => {
-			if (data.success) {
-				benefitName = data.pageName;
-				// Llenar el asunto automáticamente con el nombre del beneficio
-				document.getElementById('asunto').value = 'Solicitud de beneficio - ' + benefitName;
-
-				// Inicializar destinatarios desde almacenamiento por página
-				const key = 'formularios_destinatarios_' + (benefitName || '');
-				const saved = localStorage.getItem(key);
-				if (saved) {
-					try {
-						recipients = saved.split(',').map(s => s.trim()).filter(s => s);
-						updateHiddenRecipients();
-						renderRecipients();
-					} catch (e) {
-						console.warn('No se pudieron cargar destinatarios guardados', e);
-					}
+	// Inicializar cuando el DOM esté listo
+	document.addEventListener('DOMContentLoaded', function() {
+		console.log('DOMContentLoaded - Inicializando formulario...');
+		
+		// Obtener datos del usuario desde el servidor
+		console.log('URL de getUserData:', '<%= getUserDataURL %>');
+		fetch('<%= getUserDataURL %>')
+			.then(response => {
+				console.log('Response status:', response.status);
+				if (!response.ok) {
+					throw new Error('HTTP error, status=' + response.status);
 				}
-			}
-		})
-		.catch(error => {
-			console.error('Error al obtener nombre de página:', error);
-		});
+				return response.json();
+			})
+			.then(data => {
+				console.log('✓ Datos del usuario recibidos:', data);
+				if (data.success) {
+					// Llenar los campos del formulario con datos del usuario
+					document.getElementById('screenNameDisplay').textContent = data.screenName || 'Desconocido';
+					document.getElementById('emailFuncionario').value = data.email || '';
+					document.getElementById('nombreApellido').value = data.fullName || '';
+					document.getElementById('dependencia').value = data.dependencia || '';
+					
+					console.log('✓ Formulario prellenado exitosamente');
+					console.log('  - Email: ' + data.email);
+					console.log('  - Nombre: ' + data.fullName);
+					console.log('  - Dependencia: ' + data.dependencia);
+				} else {
+					document.getElementById('screenNameDisplay').textContent = 'Error: ' + (data.error || 'Error desconocido');
+					console.error('✗ Error en respuesta:', data.error);
+				}
+			})
+			.catch(error => {
+				document.getElementById('screenNameDisplay').textContent = 'Error de conexión';
+				console.error('✗ Error al obtener datos del usuario:', error);
+			});
+	});
 
-	// Asegura que el campo oculto destinatarios esté actualizado antes de enviar el formulario principal
+	// Validar formulario antes de enviar
 	document.getElementById('contactForm').addEventListener('submit', function(e) {
-		updateHiddenRecipients();
-		if (recipients.length === 0) {
-			alert('Debe agregar al menos un destinatario antes de enviar.');
+		console.log('\n========== VALIDANDO FORMULARIO ==========');
+		
+		const nombreApellido = document.getElementById('nombreApellido').value.trim();
+		const emailFuncionario = document.getElementById('emailFuncionario').value.trim();
+		const dependencia = document.getElementById('dependencia').value.trim();
+		const asunto = document.getElementById('asunto').value.trim();
+		const descripcion = document.getElementById('descripcion').value.trim();
+		const destinatarios = document.getElementById('destinatarios').value.trim();
+		
+		console.log('Datos del formulario:');
+		console.log('  - nombreApellido: [' + nombreApellido + ']');
+		console.log('  - emailFuncionario: [' + emailFuncionario + ']');
+		console.log('  - dependencia: [' + dependencia + ']');
+		console.log('  - asunto: [' + asunto + ']');
+		console.log('  - descripcion: [' + descripcion + ']');
+		console.log('  - destinatarios: [' + destinatarios + ']');
+		
+		if (!nombreApellido || !emailFuncionario || !dependencia || !asunto || !descripcion) {
+			console.error('✗ Faltan campos requeridos');
+			alert('Por favor, completa todos los campos requeridos.');
 			e.preventDefault();
-			return;
+			return false;
 		}
-		const key = 'formularios_destinatarios_' + (benefitName || '');
-		localStorage.setItem(key, recipients.join(','));
-		updateHiddenRecipients();
-	});
-
-	// Llamar al MVCResourceCommand para obtener los datos del usuario
-	console.log('URL de getUserData:', '<%= getUserDataURL %>');
-	fetch('<%= getUserDataURL %>')
-		.then(response => {
-			console.log('Response status:', response.status);
-			console.log('Response ok:', response.ok);
-			if (!response.ok) {
-				throw new Error('HTTP error, status=' + response.status);
-			}
-			return response.json();
-		})
-		.then(data => {
-			console.log('Datos recibidos:', data);
-			if (data.success) {
-				// Mostrar el screenName
-				console.log('Actualizando con screenName:', data.screenName);
-				document.getElementById('screenNameDisplay').textContent = data.screenName;
-				
-				// Llenar los campos de email y nombre
-				document.getElementById('emailFuncionario').value = data.email || '';
-				document.getElementById('nombreApellido').value = data.fullName || '';
-				document.getElementById('dependencia').value = data.dependencia || '';
-				
-				console.log('Datos cargados exitosamente');
-			} else {
-				document.getElementById('screenNameDisplay').textContent = 'Error: ' + (data.error || 'Error desconocido');
-				console.error('Error en respuesta:', data.error);
-			}
-		})
-		.catch(error => {
-			document.getElementById('screenNameDisplay').textContent = 'Error de conexión';
-			console.error('Error al obtener datos del usuario:', error);
-		});
-
-	// Helpers destinatarios
-	function renderRecipients() {
-		const list = document.getElementById('recipientList');
-		list.innerHTML = '';
-		if (!recipients.length) {
-			list.innerHTML = '<span class="text-muted">Sin destinatarios</span>';
-			return;
+		
+		if (!destinatarios) {
+			console.error('✗ No hay destinatarios configurados');
+			alert('No hay destinatarios de email configurados. Contacta al administrador.');
+			e.preventDefault();
+			return false;
 		}
-		recipients.forEach((email, idx) => {
-			const badge = document.createElement('span');
-			badge.className = 'badge badge-secondary mr-2 mb-2';
-			badge.textContent = email + ' ';
-			const removeBtn = document.createElement('button');
-			removeBtn.type = 'button';
-			removeBtn.className = 'btn btn-sm btn-link text-white p-0';
-			removeBtn.innerHTML = '&times;';
-			removeBtn.onclick = () => {
-				recipients.splice(idx, 1);
-				renderRecipients();
-				updateHiddenRecipients();
-			};
-			badge.appendChild(removeBtn);
-			list.appendChild(badge);
-		});
-	}
-
-	function updateHiddenRecipients() {
-		document.getElementById('destinatarios').value = recipients.join(',');
-	}
-
-	function addRecipient(email) {
-		const val = (email || '').trim().toLowerCase();
-		if (!val) return;
-		// Validación mínima de email
-		const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		if (!re.test(val)) {
-			return;
-		}
-		if (!recipients.includes(val)) {
-			recipients.push(val);
-			renderRecipients();
-			updateHiddenRecipients();
-		}
-	}
-
-	function addBulk(text) {
-		(text || '').split(',').forEach(t => addRecipient(t));
-	}
-
-	// Solo gestión de destinatarios manuales
-	$('#recipientModal').on('show.bs.modal', function () {
-		renderRecipients();
-	});
-
-	document.getElementById('addRecipientBtn').addEventListener('click', function() {
-		addRecipient(document.getElementById('recipientInput').value);
-		document.getElementById('recipientInput').value = '';
-	});
-
-	document.getElementById('addBulkBtn').addEventListener('click', function() {
-		addBulk(document.getElementById('recipientBulk').value);
-		document.getElementById('recipientBulk').value = '';
-	});
-
-	document.getElementById('saveRecipientsBtn').addEventListener('click', function() {
-		const key = 'formularios_destinatarios_' + (benefitName || '');
-		localStorage.setItem(key, recipients.join(','));
-		updateHiddenRecipients();
-		$('#recipientModal').modal('hide');
+		
+		console.log('✓ Validación completada. Enviando formulario...');
 	});
 </script>

@@ -131,5 +131,11 @@ public class EnviarFormularioMVCActionCommand extends BaseMVCActionCommand {
 		System.out.println("[OK] Correos enviados exitosamente: " + enviados);
 		System.out.println("[ERROR] Errores durante envio: " + errores);
 		System.out.println("================================================================================\n");
+		
+		if (errores == 0 && enviados > 0) {
+			actionResponse.setRenderParameter("success", "true");
+		} else if (errores > 0) {
+			actionResponse.setRenderParameter("error", "Algunos correos no pudieron ser enviados");
+		}
 	}
 }
