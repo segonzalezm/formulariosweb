@@ -1,14 +1,17 @@
 
 package cl.cgr.formulariosweb.portlet;
 
-import cl.cgr.formulariosweb.constants.FormularioswebPortletKeys;
-import cl.cgr.formulariosweb.util.EmailUtil;
-import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
-import javax.portlet.Portlet;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
+import javax.portlet.Portlet;
 import javax.portlet.ProcessAction;
+
 import org.osgi.service.component.annotations.Component;
+
+import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
+
+import cl.cgr.formulariosweb.constants.FormularioswebPortletKeys;
+import cl.cgr.formulariosweb.util.EmailUtil;
 
 /**
  * @author sgonzalezm
@@ -21,6 +24,7 @@ import org.osgi.service.component.annotations.Component;
 		"javax.portlet.display-name=Formulariosweb",
 		"javax.portlet.init-param.template-path=/",
 		"javax.portlet.init-param.view-template=/view.jsp",
+		"javax.portlet.init-param.config-template=/configuration.jsp",
 		"javax.portlet.name=" + FormularioswebPortletKeys.FORMULARIOSWEB,
 		"javax.portlet.resource-bundle=content.Language",
 		"javax.portlet.security-role-ref=power-user,user"
