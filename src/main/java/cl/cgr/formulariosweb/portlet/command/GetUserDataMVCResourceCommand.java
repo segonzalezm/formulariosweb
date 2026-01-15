@@ -115,7 +115,6 @@ public class GetUserDataMVCResourceCommand implements MVCResourceCommand {
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
 					String dependencia = rs.getString("dependencia");
-					_log.info("Dependencia encontrada para " + email + ": " + dependencia);
 					return dependencia != null ? dependencia : "";
 				}
 			}

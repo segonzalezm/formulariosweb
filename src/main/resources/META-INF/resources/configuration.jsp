@@ -47,7 +47,7 @@
 							cssClass="form-control"
 						/>
 						<div class="alert alert-light border border-secondary mt-2 p-2 small" role="alert" style="font-size: 12px;">
-							<strong>Formato:</strong> Correos separados por comas (email1@cgr.cl, email2@cgr.cl) o por saltos de línea.
+							<strong>Formato:</strong> Correos separados por comas (email1@cgr.cl, email2@cgr.cl).
 						</div>
 					</div>
 
