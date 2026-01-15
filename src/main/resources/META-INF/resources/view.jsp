@@ -4,7 +4,9 @@
 <%
 	PortletPreferences prefs = renderRequest.getPreferences();
 	String destinatariosEmail = prefs.getValue("destinatariosEmail", "");
+	String asuntoEmail = prefs.getValue("asuntoEmail", "");
 	System.out.println("DEBUG - Destinatarios leídos de preferencias: [" + destinatariosEmail + "]");
+	System.out.println("DEBUG - Asunto leído de preferencias: [" + asuntoEmail + "]");
 %>
 
 <portlet:resourceURL id="/formularios/getUserData" var="getUserDataURL" />
@@ -17,21 +19,6 @@
 			<div class="card">
 				<div class="card-header d-flex justify-content-between align-items-center" style="background-color:#1b1f49; color:white;">
 					<h4 class="mb-0">Formulario de Contacto - Solicitud de Beneficios</h4>
-					<%
-						com.liferay.portal.kernel.model.Role adminRole = null;
-						boolean isAdmin = false;
-						try {
-							adminRole = com.liferay.portal.kernel.service.RoleLocalServiceUtil.getRole(themeDisplay.getCompanyId(), "Administrator");
-							isAdmin = com.liferay.portal.kernel.service.UserLocalServiceUtil.hasRoleUser(adminRole.getRoleId(), themeDisplay.getUserId());
-						} catch (Exception e) {
-							// Si hay error, no mostrar el botón
-						}
-					%>
-					<% if (isAdmin) { %>
-						<button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#recipientModal">
-							<i class="fa fa-cog"></i> Destinatario
-						</button>
-					<% } %>
 				</div>
 				<div class="card-body">
 					<% if (destinatariosEmail != null && !destinatariosEmail.trim().isEmpty()) { %>
@@ -136,51 +123,7 @@
 	</div>
 </div>
 
-<!-- Modal Destinatarios -->
-<div class="modal fade" id="recipientModal" tabindex="-1" role="dialog" aria-labelledby="recipientModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-lg" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="recipientModalLabel">Seleccionar destinatarios</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<!-- Tabs -->
-				<ul class="nav nav-tabs mb-3" role="tablist">
-					<li class="nav-item">
-						<a class="nav-link active" id="manual-tab" data-toggle="tab" href="#manualPane" role="tab">Ingreso</a>
-					</li>
-				</ul>
 
-				<div class="tab-content">
-					<div class="tab-pane fade show active" id="manualPane" role="tabpanel">
-						<p>Agrega correos manualmente.</p>
-						<div class="input-group mb-3">
-							<input type="email" class="form-control" id="recipientInput" placeholder="correo@ejemplo.com">
-							<div class="input-group-append">
-								<button class="btn btn-outline-secondary" type="button" id="addRecipientBtn">Agregar</button>
-							</div>
-						</div>
-
-						<div class="form-group mt-2">
-							<label for="recipientBulk">Ingresar múltiples (separados por coma)</label>
-							<textarea class="form-control" id="recipientBulk" rows="2" placeholder="correo1@ejemplo.com, correo2@ejemplo.com"></textarea>
-							<button class="btn btn-link p-0 mt-1" type="button" id="addBulkBtn">Agregar todos</button>
-						</div>
-
-						<div id="recipientList" class="mb-2"></div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-				<button type="button" class="btn btn-primary" id="saveRecipientsBtn">Guardar</button>
-			</div>
-		</div>
-	</div>
-</div>
 
 <script>
 	let benefitName = '';
@@ -193,21 +136,9 @@
 		.then(data => {
 			if (data.success) {
 				benefitName = data.pageName;
-				// Llenar el asunto automáticamente con el nombre del beneficio
-				document.getElementById('asunto').value = 'Solicitud de beneficio - ' + benefitName;
-
-				// Inicializar destinatarios desde almacenamiento por página
-				const key = 'formularios_destinatarios_' + (benefitName || '');
-				const saved = localStorage.getItem(key);
-				if (saved) {
-					try {
-						recipients = saved.split(',').map(s => s.trim()).filter(s => s);
-						updateHiddenRecipients();
-						renderRecipients();
-					} catch (e) {
-						console.warn('No se pudieron cargar destinatarios guardados', e);
-					}
-				}
+				// Llenar el asunto desde configuración del portlet
+				const asuntoConfigurable = '<%= asuntoEmail %>';
+				document.getElementById('asunto').value = asuntoConfigurable || 'Solicitud de beneficio - ' + benefitName;
 			}
 		})
 		.catch(error => {
@@ -261,74 +192,7 @@
 			console.error('Error al obtener datos del usuario:', error);
 		});
 
-	// Helpers destinatarios
-	function renderRecipients() {
-		const list = document.getElementById('recipientList');
-		list.innerHTML = '';
-		if (!recipients.length) {
-			list.innerHTML = '<span class="text-muted">Sin destinatarios</span>';
-			return;
-		}
-		recipients.forEach((email, idx) => {
-			const badge = document.createElement('span');
-			badge.className = 'badge badge-secondary mr-2 mb-2';
-			badge.textContent = email + ' ';
-			const removeBtn = document.createElement('button');
-			removeBtn.type = 'button';
-			removeBtn.className = 'btn btn-sm btn-link text-white p-0';
-			removeBtn.innerHTML = '&times;';
-			removeBtn.onclick = () => {
-				recipients.splice(idx, 1);
-				renderRecipients();
-				updateHiddenRecipients();
-			};
-			badge.appendChild(removeBtn);
-			list.appendChild(badge);
-		});
-	}
-
 	function updateHiddenRecipients() {
 		document.getElementById('destinatarios').value = recipients.join(',');
 	}
-
-	function addRecipient(email) {
-		const val = (email || '').trim().toLowerCase();
-		if (!val) return;
-		// Validación mínima de email
-		const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		if (!re.test(val)) {
-			return;
-		}
-		if (!recipients.includes(val)) {
-			recipients.push(val);
-			renderRecipients();
-			updateHiddenRecipients();
-		}
-	}
-
-	function addBulk(text) {
-		(text || '').split(',').forEach(t => addRecipient(t));
-	}
-
-	// Solo gestión de destinatarios manuales
-	$('#recipientModal').on('show.bs.modal', function () {
-		renderRecipients();
-	});
-
-	document.getElementById('addRecipientBtn').addEventListener('click', function() {
-		addRecipient(document.getElementById('recipientInput').value);
-		document.getElementById('recipientInput').value = '';
-	});
-
-	document.getElementById('addBulkBtn').addEventListener('click', function() {
-		addBulk(document.getElementById('recipientBulk').value);
-		document.getElementById('recipientBulk').value = '';
-	});
-
-	document.getElementById('saveRecipientsBtn').addEventListener('click', function() {
-		const key = 'formularios_destinatarios_' + (benefitName || '');
-		localStorage.setItem(key, recipients.join(','));
-		updateHiddenRecipients();
-		$('#recipientModal').modal('hide');
-	});
 </script>

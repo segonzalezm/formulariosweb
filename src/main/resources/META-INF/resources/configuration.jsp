@@ -4,9 +4,11 @@
 <%
 	PortletPreferences prefs = renderRequest.getPreferences();
 	String destinatariosEmail = prefs.getValue("destinatariosEmail", "");
+	String asuntoEmail = prefs.getValue("asuntoEmail", "");
 	System.out.println("======================================");
 	System.out.println("DEBUG CONFIGURATION.JSP - SE ESTÁ CARGANDO LA CONFIGURACIÓN");
-	System.out.println("DEBUG CONFIGURATION.JSP - Valor actual: [" + destinatariosEmail + "]");
+	System.out.println("DEBUG CONFIGURATION.JSP - Destinatarios: [" + destinatariosEmail + "]");
+	System.out.println("DEBUG CONFIGURATION.JSP - Asunto: [" + asuntoEmail + "]");
 	System.out.println("======================================");
 %>
 
@@ -26,9 +28,16 @@
 				<aui:input 
 					label="Destinatarios de Email" 
 					name="preferences--destinatariosEmail--" 
-					type="text" 
+					type="textarea" 
 					value="<%= destinatariosEmail %>"
-					helpMessage="Ingrese los correos electrónicos separados por comas (ejemplo: email1@cgr.cl, email2@cgr.cl)"
+					helpMessage="Ingrese los correos electrónicos separados por comas o saltos de línea (ejemplo: email1@cgr.cl, email2@cgr.cl, email3@cgr.cl)"
+				/>
+				<aui:input 
+					label="Asunto del Email" 
+					name="preferences--asuntoEmail--" 
+					type="text" 
+					value="<%= asuntoEmail %>"
+					helpMessage="Ingrese el asunto que aparecerá en los correos electrónicos (ejemplo: Solicitud de beneficio - Permiso)"
 				/>
 			</aui:fieldset>
 		</div>

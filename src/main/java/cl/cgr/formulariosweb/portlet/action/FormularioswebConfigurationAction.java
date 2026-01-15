@@ -45,10 +45,15 @@ public class FormularioswebConfigurationAction extends DefaultConfigurationActio
         System.out.println("DEBUG - processAction() llamado - Guardando configuración");
         
         String destinatariosEmail = ParamUtil.getString(actionRequest, "preferences--destinatariosEmail--");
-        System.out.println("DEBUG - Parámetro recibido: [" + destinatariosEmail + "]");
+        String asuntoEmail = ParamUtil.getString(actionRequest, "preferences--asuntoEmail--");
+        
+        System.out.println("DEBUG - Parámetro destinatarios recibido: [" + destinatariosEmail + "]");
+        System.out.println("DEBUG - Parámetro asunto recibido: [" + asuntoEmail + "]");
         
         setPreference(actionRequest, "destinatariosEmail", destinatariosEmail);
-        System.out.println("DEBUG - Preferencia guardada con clave: destinatariosEmail");
+        setPreference(actionRequest, "asuntoEmail", asuntoEmail);
+        
+        System.out.println("DEBUG - Preferencias guardadas");
         System.out.println("======================================");
         
         super.processAction(portletConfig, actionRequest, actionResponse);
