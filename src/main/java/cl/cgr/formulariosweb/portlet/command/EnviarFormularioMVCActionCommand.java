@@ -76,14 +76,31 @@ public class EnviarFormularioMVCActionCommand extends BaseMVCActionCommand {
 		}
 
 		// Construir cuerpo del email
-		String cuerpo = "<b>Datos del Funcionario:</b><br>" +
-			"* Nombre y Apellido: " + nombreApellido + "<br>" +
-			"* Dependencia: " + dependencia + "<br>" +
-			"* Telefono Celular: " + telefonoCelular + "<br>" +
-			"* Telefono Particular: " + telefonoParticular + "<br>" +
-			"* Email Funcionario: " + emailFuncionario + "<br>" +
-			"* Email Particular: " + emailParticular + "<br><br>" +
-			"<b>Descripcion de la Solicitud:</b><br>" + descripcion;
+		String cuerpo = "<!DOCTYPE html>" +
+			"<html>" +
+			"<head>" +
+			"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">" +
+			"</head>" +
+			"<body style=\"font-family: Arial, sans-serif; line-height: 1.6; color: #333;\">" +
+			"<p>Estimado/a,</p>" +
+			"<p>Se ha recibido una nueva solicitud a trav&eacute;s del formulario de contacto. A continuaci&oacute;n se detalla la informaci&oacute;n del remitente:</p>" +
+			"<hr style=\"border: none; border-top: 1px solid #ddd; margin: 20px 0;\">" +
+			"<h3 style=\"color: #003366; margin-bottom: 10px;\">Informaci&oacute;n del Funcionario</h3>" +
+			"<table style=\"width: 100%; border-collapse: collapse;\">" +
+			"<tr><td style=\"padding: 8px; font-weight: bold; width: 200px;\">Nombre y Apellido:</td><td style=\"padding: 8px;\">" + nombreApellido + "</td></tr>" +
+			"<tr><td style=\"padding: 8px; font-weight: bold;\">Dependencia:</td><td style=\"padding: 8px;\">" + dependencia + "</td></tr>" +
+			"<tr><td style=\"padding: 8px; font-weight: bold;\">Tel&eacute;fono Celular:</td><td style=\"padding: 8px;\">" + telefonoCelular + "</td></tr>" +
+			"<tr><td style=\"padding: 8px; font-weight: bold;\">Tel&eacute;fono Particular:</td><td style=\"padding: 8px;\">" + telefonoParticular + "</td></tr>" +
+			"<tr><td style=\"padding: 8px; font-weight: bold;\">Email Corporativo:</td><td style=\"padding: 8px;\">" + emailFuncionario + "</td></tr>" +
+			"<tr><td style=\"padding: 8px; font-weight: bold;\">Email Particular:</td><td style=\"padding: 8px;\">" + emailParticular + "</td></tr>" +
+			"</table>" +
+			"<hr style=\"border: none; border-top: 1px solid #ddd; margin: 20px 0;\">" +
+			"<h3 style=\"color: #003366; margin-bottom: 10px;\">Descripci&oacute;n de la Solicitud</h3>" +
+			"<p style=\"background-color: #f5f5f5; padding: 15px; border-left: 4px solid #003366;\">" + descripcion + "</p>" +
+			"<hr style=\"border: none; border-top: 1px solid #ddd; margin: 20px 0;\">" +
+			"<p style=\"font-size: 12px; color: #666;\">Este es un mensaje automatizado. Por favor, no responda directamente a este correo.</p>" +
+			"</body>" +
+			"</html>";
 
 		String remitente = "portal.contraloria@cgr.cl";
 

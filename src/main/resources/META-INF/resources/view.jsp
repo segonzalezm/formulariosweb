@@ -22,7 +22,11 @@
 
 				<div class="card-body">
 
-					<% if (destinatariosEmail != null && !destinatariosEmail.trim().isEmpty()) { %>
+					<% 
+						// Solo mostrar destinatarios configurados a usuarios Administradores
+						boolean isAdmin = themeDisplay.getPermissionChecker().isOmniadmin();
+						if (isAdmin && destinatariosEmail != null && !destinatariosEmail.trim().isEmpty()) { 
+					%>
 						<div class="alert alert-info mb-3" role="alert">
 							<strong><i class="fa fa-envelope"></i> Destinatarios configurados:</strong>
 							<%= destinatariosEmail %>
