@@ -12,38 +12,62 @@
 	System.out.println("======================================");
 %>
 
-<h1 style="color: red;">PÁGINA DE CONFIGURACIÓN</h1>
-
 <liferay-portlet:actionURL portletConfiguration="<%= true %>" var="configurationActionURL" />
-
 <liferay-portlet:renderURL portletConfiguration="<%= true %>" var="configurationRenderURL" />
 
-<aui:form action="<%= configurationActionURL %>" method="post" name="fm">
-	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.UPDATE %>" />
-	<aui:input name="redirect" type="hidden" value="<%= configurationRenderURL %>" />
-	
-	<div class="portlet-configuration-body-content">
-		<div class="container-fluid container-fluid-max-xl">
-			<aui:fieldset>
-				<aui:input 
-					label="Destinatarios de Email" 
-					name="preferences--destinatariosEmail--" 
-					type="textarea" 
-					value="<%= destinatariosEmail %>"
-					helpMessage="Ingrese los correos electrónicos separados por comas o saltos de línea (ejemplo: email1@cgr.cl, email2@cgr.cl, email3@cgr.cl)"
-				/>
-				<aui:input 
-					label="Asunto del Email" 
-					name="preferences--asuntoEmail--" 
-					type="text" 
-					value="<%= asuntoEmail %>"
-					helpMessage="Ingrese el asunto que aparecerá en los correos electrónicos (ejemplo: Solicitud de beneficio - Permiso)"
-				/>
-			</aui:fieldset>
+<div class="container-fluid">
+	<aui:form action="<%= configurationActionURL %>" method="post" name="fm">
+		<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.UPDATE %>" />
+		<aui:input name="redirect" type="hidden" value="<%= configurationRenderURL %>" />
+		
+		<div class="card shadow-lg mt-4 mb-4">
+			<div class="card-header bg-dark text-white">
+				<h4 class="mb-0">
+					<i class="fa fa-cog mr-2"></i>Configuración del Formulario
+				</h4>
+				<small class="text-muted">Configura los parámetros de envío de correos electrónicos</small>
+			</div>
+			
+			<div class="card-body">
+				<div class="alert alert-info alert-dismissible fade show" role="alert">
+					<i class="fa fa-info-circle mr-2"></i>
+					<strong>Nota:</strong> Los valores configurados aquí se utilizarán para enviar los formularios de contacto.
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+
+				<aui:fieldset>
+					<div class="form-group">
+						<aui:input 
+							label="Destinatarios de Email" 
+							name="preferences--destinatariosEmail--" 
+							type="textarea" 
+							value="<%= destinatariosEmail %>"
+							cssClass="form-control"
+						/>
+						<div class="alert alert-light border border-secondary mt-2 p-2 small" role="alert" style="font-size: 12px;">
+							<strong>Formato:</strong> Correos separados por comas (email1@cgr.cl, email2@cgr.cl) o por saltos de línea.
+						</div>
+					</div>
+
+					<div class="form-group">
+						<aui:input 
+							label="Asunto del Email" 
+							name="preferences--asuntoEmail--" 
+							type="text" 
+							value="<%= asuntoEmail %>"
+							cssClass="form-control"
+						/>
+					</div>
+				</aui:fieldset>
+			</div>
+
+			<div class="card-footer bg-light">
+				<aui:button-row>
+					<aui:button type="submit" value="Guardar Cambios" cssClass="btn btn-primary btn-lg" />
+				</aui:button-row>
+			</div>
 		</div>
-	</div>
-	
-	<aui:button-row>
-		<aui:button type="submit" value="save" />
-	</aui:button-row>
-</aui:form>
+	</aui:form>
+</div>
