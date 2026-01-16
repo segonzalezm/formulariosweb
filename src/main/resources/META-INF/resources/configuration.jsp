@@ -21,20 +21,17 @@
 		<aui:input name="redirect" type="hidden" value="<%= configurationRenderURL %>" />
 		
 		<div class="card shadow-lg mt-4 mb-4">
-			<div class="card-header bg-dark text-white">
-				<h4 class="mb-0">
+			<div class="card-header text-black">
+				<h2 class="mb-0">
 					<i class="fa fa-cog mr-2"></i>Configuración del Formulario
-				</h4>
-				<small class="text-muted">Configura los parámetros de envío de correos electrónicos</small>
+				</h2>
 			</div>
 			
 			<div class="card-body">
 				<div class="alert alert-info alert-dismissible fade show" role="alert">
 					<i class="fa fa-info-circle mr-2"></i>
 					<strong>Nota:</strong> Los valores configurados aquí se utilizarán para enviar los formularios de contacto.
-					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
+		
 				</div>
 
 				<aui:fieldset>

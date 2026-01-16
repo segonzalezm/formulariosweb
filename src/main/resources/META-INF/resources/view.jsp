@@ -20,11 +20,11 @@
 
 <div class="container mt-5">
 	<div class="row">
-		<div class="col-md-8 offset-md-2">
+		<div class="col-md-10 offset-md-1">
 			<div class="card">
 				<div class="card-header d-flex justify-content-between align-items-center"
 					 style="background-color:#1b1f49; color:white;">
-					<h4 class="mb-0">Formulario de Contacto - Solicitud de Beneficios</h4>
+					<h4 class="mb-0">Formulario de Contacto</h4>
 				</div>
 
 				<div class="card-body">
@@ -62,10 +62,6 @@
 						boolean isAdmin = themeDisplay.getPermissionChecker().isOmniadmin();
 						if (isAdmin && destinatariosEmail != null && !destinatariosEmail.trim().isEmpty()) { 
 					%>
-						<div class="alert alert-info mb-3" role="alert">
-							<strong><i class="fa fa-envelope"></i> Destinatarios configurados:</strong>
-							<%= destinatariosEmail %>
-						</div>
 					<% } %>
 
 					<portlet:actionURL name="enviarFormulario" var="enviarFormularioURL">
@@ -80,9 +76,9 @@
 						<fieldset class="mb-4">
 							<legend class="border-bottom pb-2 mb-3">
 								<h5>Datos del Funcionario</h5>
-								<small class="text-muted d-block mt-1">
-									Usuario: <strong id="screenNameDisplay">Cargando...</strong>
-								</small>
+							<small class="text-muted d-none mt-1">
+								Usuario: <strong id="screenNameDisplay">Cargando...</strong>
+							</small>
 							</legend>
 
 							<div class="form-group">
@@ -186,11 +182,16 @@
 								<label for="telefonoParticular">
 									Teléfono Particular <span class="text-muted">(Opcional)</span>
 								</label>
-								<input type="tel"
-									   class="form-control"
-									   id="telefonoParticular"
-									   name="<portlet:namespace />telefonoParticular"
-									   maxlength="8">
+								<div class="input-group">
+									<span class="input-group-text">+56</span>
+									<input type="tel"
+										   class="form-control"
+										   id="telefonoParticular"
+										   name="<portlet:namespace />telefonoParticular"
+										   placeholder="Ingrese su número particular (8 dígitos)"
+										   pattern="[0-9]{8}"
+										   maxlength="8">
+								</div>
 							</div>
 
 							<div class="form-group">
