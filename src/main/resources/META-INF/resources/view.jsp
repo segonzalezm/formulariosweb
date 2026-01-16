@@ -93,7 +93,8 @@
 									   class="form-control"
 									   id="nombreApellido"
 									   name="<portlet:namespace />nombreApellido"
-									   placeholder="Ingrese su nombre y apellido">
+								   placeholder="Ingrese su nombre y apellido"
+								   readonly>
 							</div>
 
 							<div class="form-group">
@@ -104,7 +105,8 @@
 									   class="form-control"
 									   id="emailFuncionario"
 									   name="<portlet:namespace />emailFuncionario"
-									   placeholder="correo@ejemplo.com">
+								   placeholder="correo@ejemplo.com"
+								   readonly>
 							</div>
 
 							<div class="form-group">
@@ -115,7 +117,8 @@
 									   class="form-control"
 									   id="dependencia"
 									   name="<portlet:namespace />dependencia"
-									   placeholder="Ingrese su dependencia">
+								   placeholder="Ingrese su dependencia"
+								   readonly>
 							</div>
 
 							<!-- Hidden -->
@@ -140,7 +143,8 @@
 									   id="asunto"
 									   name="<portlet:namespace />asunto"
 									   placeholder="Ingrese el asunto de la solicitud"
-									   value="<%= asuntoEmail %>">
+								   value="<%= asuntoEmail %>"
+								   readonly>
 							</div>
 
 							<div class="form-group">
