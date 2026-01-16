@@ -8,10 +8,15 @@ import org.osgi.service.component.annotations.Component;
 
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.servlet.SessionMessages;
+import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.ParamUtil;
 
 import cl.cgr.formulariosweb.constants.FormularioswebPortletKeys;
 import cl.cgr.formulariosweb.util.EmailUtil;
+
+import com.liferay.portal.kernel.util.PortalUtil;
+import javax.portlet.PortletURL;
 
 /**
  * MVC Action Command para enviar formularios
@@ -61,14 +66,11 @@ public class EnviarFormularioMVCActionCommand extends BaseMVCActionCommand {
 		System.out.println("  [OK] destinatarios: [" + destinatarios + "]");
 		System.out.println("  [OK] asunto: [" + asunto + "]");
 
-		// Validar que hay destinatarios
 		if (destinatarios == null || destinatarios.trim().isEmpty()) {
 			System.out.println("\n[ERROR] No hay destinatarios disponibles!");
 			System.out.println("================================================================================");
 			return;
 		}
-
-		// Validar que hay asunto
 		if (asunto == null || asunto.trim().isEmpty()) {
 			System.out.println("\n[ERROR] No hay asunto disponible!");
 			System.out.println("================================================================================");
@@ -132,10 +134,20 @@ public class EnviarFormularioMVCActionCommand extends BaseMVCActionCommand {
 		System.out.println("[ERROR] Errores durante envio: " + errores);
 		System.out.println("================================================================================\n");
 		
+		// Agregar mensaje de éxito o error a la sesión
 		if (errores == 0 && enviados > 0) {
-			actionResponse.setRenderParameter("success", "true");
+			SessionMessages.add(actionRequest, "formulario-enviado-exitosamente");
 		} else if (errores > 0) {
-			actionResponse.setRenderParameter("error", "Algunos correos no pudieron ser enviados");
+			SessionErrors.add(actionRequest, "error-envio-parcial");
+		}
+		
+		// Post-Redirect-Get: redirigir a la URL actual para evitar reenvío de formulario
+		String redirect = ParamUtil.getString(actionRequest, "redirect");
+		System.out.println("[REDIRECT] URL de redirección: [" + redirect + "]");
+
+		if (redirect != null && !redirect.trim().isEmpty()) {
+			System.out.println("[REDIRECT] Ejecutando redirección...");
+			actionResponse.sendRedirect(redirect);
 		}
 	}
 }

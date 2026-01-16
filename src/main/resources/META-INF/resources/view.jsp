@@ -1,10 +1,17 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ include file="/init.jsp" %>
 
+<%@ page import="com.liferay.portal.kernel.servlet.SessionMessages" %>
+<%@ page import="com.liferay.portal.kernel.servlet.SessionErrors" %>
+<%@ page import="com.liferay.portal.kernel.util.PortalUtil" %>
+
 <%
 	PortletPreferences prefs = renderRequest.getPreferences();
 	String destinatariosEmail = prefs.getValue("destinatariosEmail", "");
 	String asuntoEmail = prefs.getValue("asuntoEmail", "");
+	
+	// Obtener URL actual para el redirect
+	String currentURL = PortalUtil.getCurrentURL(request);
 %>
 
 <portlet:resourceURL id="/formularios/getUserData" var="getUserDataURL" />
@@ -23,11 +30,11 @@
 				<div class="card-body">
 
 					<%
-						// Mostrar mensaje de éxito o error después del envío
-						String success = renderRequest.getParameter("success");
-						String error = renderRequest.getParameter("error");
+						// Mostrar mensaje de éxito o error usando SessionMessages
+						boolean showSuccess = SessionMessages.contains(renderRequest, "formulario-enviado-exitosamente");
+						boolean showError = SessionErrors.contains(renderRequest, "error-envio-parcial");
 						
-						if ("true".equals(success)) {
+						if (showSuccess) {
 					%>
 						<div class="alert alert-success alert-dismissible fade show" role="alert">
 							<strong><i class="fa fa-check-circle"></i> ¡Éxito!</strong> 
@@ -37,11 +44,11 @@
 							</button>
 						</div>
 					<%
-						} else if (error != null && !error.trim().isEmpty()) {
+						} else if (showError) {
 					%>
 						<div class="alert alert-danger alert-dismissible fade show" role="alert">
 							<strong><i class="fa fa-exclamation-triangle"></i> Error:</strong> 
-							<%= error %>
+							Algunos correos no pudieron ser enviados
 							<button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
 								<span aria-hidden="true">&times;</span>
 							</button>
@@ -61,9 +68,13 @@
 						</div>
 					<% } %>
 
+					<portlet:actionURL name="enviarFormulario" var="enviarFormularioURL">
+						<portlet:param name="redirect" value="<%= currentURL %>" />
+					</portlet:actionURL>
+
 					<form id="contactForm"
 						  method="POST"
-						  action="<portlet:actionURL name='enviarFormulario' />">
+						  action="<%= enviarFormularioURL %>">
 
 						<!-- ================= DATOS DEL FUNCIONARIO ================= -->
 						<fieldset class="mb-4">
@@ -282,4 +293,15 @@
 		
 		console.log('✓ Validación completada. Enviando formulario...');
 	});
+
+	// Limpiar formulario después del envío exitoso
+	<% if (showSuccess) { %>
+		console.log('✓ Envío exitoso detectado. Limpiando formulario...');
+		// Limpiar solo los campos editables (no los precargados)
+		document.getElementById('descripcion').value = '';
+		document.getElementById('telefonoCelular').value = '';
+		document.getElementById('telefonoParticular').value = '';
+		document.getElementById('emailParticular').value = '';
+		console.log('✓ Formulario limpiado');
+	<% } %>
 </script>
