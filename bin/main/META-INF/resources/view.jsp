@@ -18,9 +18,9 @@
 <portlet:resourceURL id="/formularios/getPageName" var="getPageNameURL" />
 <portlet:resourceURL id="/formularios/getFuncionarios" var="getFuncionariosURL" />
 
-<div class="container mt-5">
+<div class="container">
 	<div class="row">
-		<div class="col-md-10 offset-md-1">
+		<div class="col-md-12">
 			<div class="card">
 				<div class="card-header d-flex justify-content-between align-items-center"
 					 style="background-color:#1b1f49; color:white;">

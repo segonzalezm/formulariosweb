@@ -109,7 +109,7 @@ public class EnviarFormularioMVCActionCommand extends BaseMVCActionCommand {
 			"</body>" +
 			"</html>";
 
-		String remitente = "portal.contraloria@cgr.cl";
+		String remitente = "noreply@contraloria.cl";
 
 		System.out.println("\n[PROCESS] PROCESANDO DESTINATARIOS:");
 		String[] destinatariosArray = destinatarios.split(",");
@@ -134,6 +134,49 @@ public class EnviarFormularioMVCActionCommand extends BaseMVCActionCommand {
 				e.printStackTrace();
 				errores++;
 			}
+		}
+
+		// Enviar copia al usuario que realiza la solicitud
+		System.out.println("\n[COPY] ENVIANDO COPIA AL USUARIO:");
+		String emailUsuario = emailFuncionario;
+		if (emailUsuario != null && !emailUsuario.trim().isEmpty()) {
+			String asuntoCopia = "COPIA SOLICITUD - " + asunto;
+			String cuerpoConfirmacion = "<!DOCTYPE html>" +
+				"<html>" +
+				"<head>" +
+				"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">" +
+				"</head>" +
+				"<body style=\"font-family: Arial, sans-serif; line-height: 1.6; color: #333;\">" +
+				"<p>Estimado/a " + nombreApellido + ",</p>" +
+				"<p>Le enviamos una copia de la solicitud que ha realizado a trav&eacute;s del formulario de contacto de la Contralor&iacute;a General de la Rep&uacute;blica.</p>" +
+				"<p>Esta es una confirmaci&oacute;n de que su solicitud ha sido recibida exitosamente.</p>" +
+				"<hr style=\"border: none; border-top: 1px solid #ddd; margin: 20px 0;\">" +
+				"<h3 style=\"color: #003366; margin-bottom: 10px;\">Informaci&oacute;n de su Solicitud</h3>" +
+				"<table style=\"width: 100%; border-collapse: collapse;\">" +
+				"<tr><td style=\"padding: 8px; font-weight: bold; width: 200px;\">Nombre y Apellido:</td><td style=\"padding: 8px;\">" + nombreApellido + "</td></tr>" +
+				"<tr><td style=\"padding: 8px; font-weight: bold;\">Dependencia:</td><td style=\"padding: 8px;\">" + dependencia + "</td></tr>" +
+				"<tr><td style=\"padding: 8px; font-weight: bold;\">Tel&eacute;fono Celular:</td><td style=\"padding: 8px;\">" + telefonoCelular + "</td></tr>" +
+				"<tr><td style=\"padding: 8px; font-weight: bold;\">Tel&eacute;fono Particular:</td><td style=\"padding: 8px;\">" + telefonoParticular + "</td></tr>" +
+				"<tr><td style=\"padding: 8px; font-weight: bold;\">Email:</td><td style=\"padding: 8px;\">" + emailFuncionario + "</td></tr>" +
+				"<tr><td style=\"padding: 8px; font-weight: bold;\">Email Particular:</td><td style=\"padding: 8px;\">" + emailParticular + "</td></tr>" +
+				"</table>" +
+				"<hr style=\"border: none; border-top: 1px solid #ddd; margin: 20px 0;\">" +
+				"<h3 style=\"color: #003366; margin-bottom: 10px;\">Descripci&oacute;n de su Solicitud</h3>" +
+				"<p style=\"background-color: #f5f5f5; padding: 15px; border-left: 4px solid #003366;\">" + descripcionHTML + "</p>" +
+				"<hr style=\"border: none; border-top: 1px solid #ddd; margin: 20px 0;\">" +
+				"<p style=\"font-size: 12px; color: #666;\">Este es un mensaje automatizado. Por favor, no responda directamente a este correo.</p>" +
+				"</body>" +
+				"</html>";
+			
+			try {
+				EmailUtil.enviarCorreo(emailUsuario, asuntoCopia, cuerpoConfirmacion, remitente);
+				System.out.println("[OK] Copia enviada exitosamente al usuario: " + emailUsuario);
+			} catch (Exception e) {
+				System.out.println("[ERROR] Error al enviar copia al usuario " + emailUsuario + ": " + e.getMessage());
+				e.printStackTrace();
+			}
+		} else {
+			System.out.println("[WARNING] No hay email del usuario disponible para enviar copia");
 		}
 
 		System.out.println("\n[SUMMARY] RESUMEN DE ENVIO:");
