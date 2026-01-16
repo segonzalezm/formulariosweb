@@ -81,40 +81,100 @@
 							</small>
 							</legend>
 
-							<div class="form-group">
-								<label for="nombreApellido">
-									Nombre y Apellido <span class="text-danger">*</span>
-								</label>
-								<input type="text"
-									   class="form-control"
-									   id="nombreApellido"
-									   name="<portlet:namespace />nombreApellido"
-								   placeholder="Ingrese su nombre y apellido"
-								   readonly>
+							<!-- ROW 1: Nombre y Apellido - Telefono Celular -->
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="nombreApellido">
+											Nombre y Apellido <span class="text-danger">*</span>
+										</label>
+										<input type="text"
+											   class="form-control"
+											   id="nombreApellido"
+											   name="<portlet:namespace />nombreApellido"
+										   placeholder="Ingrese su nombre y apellido"
+										   readonly>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="telefonoCelular">
+											Teléfono Celular <span class="text-muted">(Opcional)</span>
+										</label>
+										<div class="input-group">
+											<span class="input-group-text">+56 9</span>
+											<input type="tel"
+												   class="form-control"
+												   id="telefonoCelular"
+												   name="<portlet:namespace />telefonoCelular"
+												   placeholder="Ingrese su número celular (8 dígitos)"
+												   pattern="[0-9]{8}"
+												   maxlength="8">
+										</div>
+									</div>
+								</div>
 							</div>
 
-							<div class="form-group">
-								<label for="emailFuncionario">
-									Email <span class="text-danger">*</span>
-								</label>
-								<input type="email"
-									   class="form-control"
-									   id="emailFuncionario"
-									   name="<portlet:namespace />emailFuncionario"
-								   placeholder="correo@ejemplo.com"
-								   readonly>
+							<!-- ROW 2: Email - Telefono Particular -->
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="emailFuncionario">
+											Email <span class="text-danger">*</span>
+										</label>
+										<input type="email"
+											   class="form-control"
+											   id="emailFuncionario"
+											   name="<portlet:namespace />emailFuncionario"
+										   placeholder="correo@ejemplo.com"
+										   readonly>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="telefonoParticular">
+											Teléfono Particular <span class="text-muted">(Opcional)</span>
+										</label>
+										<div class="input-group">
+											<span class="input-group-text">+56</span>
+											<input type="tel"
+												   class="form-control"
+												   id="telefonoParticular"
+												   name="<portlet:namespace />telefonoParticular"
+												   placeholder="Ingrese su número particular (8 dígitos)"
+												   pattern="[0-9]{8}"
+												   maxlength="8">
+										</div>
+									</div>
+								</div>
 							</div>
 
-							<div class="form-group">
-								<label for="dependencia">
-									Dependencia <span class="text-danger">*</span>
-								</label>
-								<input type="text"
-									   class="form-control"
-									   id="dependencia"
-									   name="<portlet:namespace />dependencia"
-								   placeholder="Ingrese su dependencia"
-								   readonly>
+							<!-- ROW 3: Dependencia - Email Particular -->
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="dependencia">
+											Dependencia <span class="text-danger">*</span>
+										</label>
+										<input type="text"
+											   class="form-control"
+											   id="dependencia"
+											   name="<portlet:namespace />dependencia"
+										   placeholder="Ingrese su dependencia"
+										   readonly>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="emailParticular">
+											Email Particular <span class="text-muted">(Opcional)</span>
+										</label>
+										<input type="email"
+											   class="form-control"
+											   id="emailParticular"
+											   name="<portlet:namespace />emailParticular">
+									</div>
+								</div>
 							</div>
 
 							<!-- Hidden -->
@@ -139,8 +199,8 @@
 									   id="asunto"
 									   name="<portlet:namespace />asunto"
 									   placeholder="Ingrese el asunto de la solicitud"
-								   value="<%= asuntoEmail %>"
-								   readonly>
+									   value="<%= asuntoEmail %>"
+									   readonly>
 							</div>
 
 							<div class="form-group">
@@ -153,55 +213,6 @@
 										  rows="5"
 										  placeholder="Describa detalladamente su solicitud"
 										  required></textarea>
-							</div>
-						</fieldset>
-
-						<!-- ================= DATOS DE CONTACTO ================= -->
-						<fieldset class="mb-4">
-							<legend class="border-bottom pb-2 mb-3">
-								<h5>Datos de Contacto</h5>
-							</legend>
-
-							<div class="form-group">
-								<label for="telefonoCelular">
-									Teléfono Celular <span class="text-muted">(Opcional)</span>
-								</label>
-								<div class="input-group">
-									<span class="input-group-text">+56 9</span>
-									<input type="tel"
-										   class="form-control"
-										   id="telefonoCelular"
-										   name="<portlet:namespace />telefonoCelular"
-										   placeholder="Ingrese su número celular (8 dígitos)"
-										   pattern="[0-9]{8}"
-										   maxlength="8">
-								</div>
-							</div>
-
-							<div class="form-group">
-								<label for="telefonoParticular">
-									Teléfono Particular <span class="text-muted">(Opcional)</span>
-								</label>
-								<div class="input-group">
-									<span class="input-group-text">+56</span>
-									<input type="tel"
-										   class="form-control"
-										   id="telefonoParticular"
-										   name="<portlet:namespace />telefonoParticular"
-										   placeholder="Ingrese su número particular (8 dígitos)"
-										   pattern="[0-9]{8}"
-										   maxlength="8">
-								</div>
-							</div>
-
-							<div class="form-group">
-								<label for="emailParticular">
-									Email Particular <span class="text-muted">(Opcional)</span>
-								</label>
-								<input type="email"
-									   class="form-control"
-									   id="emailParticular"
-									   name="<portlet:namespace />emailParticular">
 							</div>
 						</fieldset>
 
