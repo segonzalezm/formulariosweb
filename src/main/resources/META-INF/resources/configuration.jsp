@@ -15,9 +15,24 @@
 <liferay-portlet:actionURL portletConfiguration="<%= true %>" var="configurationActionURL" />
 <liferay-portlet:renderURL portletConfiguration="<%= true %>" var="configurationRenderURL" />
 
-<div class="container mt-5 mb-5">
-	<div class="row justify-content-center">
-		<div class="col-lg-8 col-md-10">
+<style>
+	html, body {
+		margin: 0;
+		padding: 0;
+		overflow: hidden;
+	}
+	.config-container {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 100vh;
+	}
+</style>
+
+<div class="config-container">
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-lg-8 col-md-10">
 			<aui:form action="<%= configurationActionURL %>" method="post" name="fm" cssClass="needs-validation">
 				<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.UPDATE %>" />
 				<aui:input name="redirect" type="hidden" value="<%= configurationRenderURL %>" />
@@ -55,6 +70,7 @@
 								cssClass="form-control form-control-lg"
 								rows="3"
 								placeholder="email1@cgr.cl, email2@cgr.cl"
+								style="resize: none; overflow: hidden;"
 							/>
 							<div class="d-flex align-items-center mt-2 text-muted small">
 								<i class="fa fa-lightbulb mr-2"></i>
@@ -90,4 +106,5 @@
 			</aui:form>
 		</div>
 	</div>
+</div>
 </div>
