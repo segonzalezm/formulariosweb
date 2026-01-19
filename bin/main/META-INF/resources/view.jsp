@@ -22,8 +22,7 @@
 	<div class="row">
 		<div class="col-md-12">
 			<div class="card">
-				<div class="card-header d-flex justify-content-between align-items-center"
-					 style="background-color:#1b1f49; color:white;">
+				<div class="card-header d-flex justify-content-between align-items-center card-header-primary">
 					<h4 class="mb-0">Formulario de Contacto</h4>
 				</div>
 
@@ -81,7 +80,6 @@
 							</small>
 							</legend>
 
-							<!-- ROW 1: Nombre y Apellido - Telefono Celular -->
 							<div class="row">
 								<div class="col-md-6">
 									<div class="form-group">
@@ -115,7 +113,6 @@
 								</div>
 							</div>
 
-							<!-- ROW 2: Email - Telefono Particular -->
 							<div class="row">
 								<div class="col-md-6">
 									<div class="form-group">
@@ -149,7 +146,6 @@
 								</div>
 							</div>
 
-							<!-- ROW 3: Dependencia - Email Particular -->
 							<div class="row">
 								<div class="col-md-6">
 									<div class="form-group">
@@ -177,7 +173,6 @@
 								</div>
 							</div>
 
-							<!-- Hidden -->
 							<input type="hidden"
 								   id="destinatarios"
 								   name="<portlet:namespace />destinatarios"
@@ -218,12 +213,9 @@
 
 						<div class="form-group text-center mt-4">
 							<button type="submit"
-									class="btn"
-									style="background-color:#1b1f49; color:white;">
-								<i class="fa fa-paper-plane"></i> Enviar
-							</button>
-						</div>
-
+								class="btn btn-send-form">
+							<i class="fa fa-paper-plane"></i> Enviar
+						</button>
 					</form>
 				</div>
 			</div>
@@ -234,14 +226,10 @@
 
 
 <script>
-	console.log('========== SCRIPT INICIADO ==========');
-
 	// Inicializar cuando el DOM esté listo
 	document.addEventListener('DOMContentLoaded', function() {
-		console.log('DOMContentLoaded - Inicializando formulario...');
 		
 		// Obtener datos del usuario desde el servidor
-		console.log('URL de getUserData:', '<%= getUserDataURL %>');
 		fetch('<%= getUserDataURL %>')
 			.then(response => {
 				console.log('Response status:', response.status);
@@ -251,7 +239,6 @@
 				return response.json();
 			})
 			.then(data => {
-				console.log('✓ Datos del usuario recibidos:', data);
 				if (data.success) {
 					// Llenar los campos del formulario con datos del usuario
 					document.getElementById('screenNameDisplay').textContent = data.screenName || 'Desconocido';
@@ -259,10 +246,6 @@
 					document.getElementById('nombreApellido').value = data.fullName || '';
 					document.getElementById('dependencia').value = data.dependencia || '';
 					
-					console.log('✓ Formulario prellenado exitosamente');
-					console.log('  - Email: ' + data.email);
-					console.log('  - Nombre: ' + data.fullName);
-					console.log('  - Dependencia: ' + data.dependencia);
 				} else {
 					document.getElementById('screenNameDisplay').textContent = 'Error: ' + (data.error || 'Error desconocido');
 					console.error('✗ Error en respuesta:', data.error);
@@ -276,7 +259,6 @@
 
 	// Validar formulario antes de enviar
 	document.getElementById('contactForm').addEventListener('submit', function(e) {
-		console.log('\n========== VALIDANDO FORMULARIO ==========');
 		
 		const nombreApellido = document.getElementById('nombreApellido').value.trim();
 		const emailFuncionario = document.getElementById('emailFuncionario').value.trim();
@@ -284,14 +266,6 @@
 		const asunto = document.getElementById('asunto').value.trim();
 		const descripcion = document.getElementById('descripcion').value.trim();
 		const destinatarios = document.getElementById('destinatarios').value.trim();
-		
-		console.log('Datos del formulario:');
-		console.log('  - nombreApellido: [' + nombreApellido + ']');
-		console.log('  - emailFuncionario: [' + emailFuncionario + ']');
-		console.log('  - dependencia: [' + dependencia + ']');
-		console.log('  - asunto: [' + asunto + ']');
-		console.log('  - descripcion: [' + descripcion + ']');
-		console.log('  - destinatarios: [' + destinatarios + ']');
 		
 		if (!nombreApellido || !emailFuncionario || !dependencia || !asunto || !descripcion) {
 			console.error('✗ Faltan campos requeridos');
@@ -306,8 +280,6 @@
 			e.preventDefault();
 			return false;
 		}
-		
-		console.log('✓ Validación completada. Enviando formulario...');
 	});
 
 	// Limpiar formulario después del envío exitoso
@@ -318,6 +290,5 @@
 		document.getElementById('telefonoCelular').value = '';
 		document.getElementById('telefonoParticular').value = '';
 		document.getElementById('emailParticular').value = '';
-		console.log('✓ Formulario limpiado');
 	<% } %>
 </script>

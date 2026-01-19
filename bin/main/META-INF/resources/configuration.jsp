@@ -5,29 +5,14 @@
 	PortletPreferences prefs = renderRequest.getPreferences();
 	String destinatariosEmail = prefs.getValue("destinatariosEmail", "");
 	String asuntoEmail = prefs.getValue("asuntoEmail", "");
-	System.out.println("======================================");
-	System.out.println("DEBUG CONFIGURATION.JSP - SE ESTÁ CARGANDO LA CONFIGURACIÓN");
-	System.out.println("DEBUG CONFIGURATION.JSP - Destinatarios: [" + destinatariosEmail + "]");
-	System.out.println("DEBUG CONFIGURATION.JSP - Asunto: [" + asuntoEmail + "]");
-	System.out.println("======================================");
 %>
 
 <liferay-portlet:actionURL portletConfiguration="<%= true %>" var="configurationActionURL" />
 <liferay-portlet:renderURL portletConfiguration="<%= true %>" var="configurationRenderURL" />
 
-<style>
-	html, body {
-		margin: 0;
-		padding: 0;
-		overflow: hidden;
-	}
-	.config-container {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		min-height: 100vh;
-	}
-</style>
+<liferay-util:html-top>
+	<link rel="stylesheet" href="<%= request.getContextPath() %>/css/configuration.css" />
+</liferay-util:html-top>
 
 <div class="config-container">
 	<div class="container">
@@ -38,7 +23,7 @@
 				<aui:input name="redirect" type="hidden" value="<%= configurationRenderURL %>" />
 				
 				<div class="card border-0 shadow">
-					<div class="card-header bg-gradient" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+					<div class="card-header bg-gradient" style="background: linear-gradient(135deg, #74cec4 0%, #1b1f49 100%);">
 						<h3 class="text-white mb-0 font-weight-bold">
 							<i class="fa fa-sliders-h mr-2"></i>Configuración del Formulario
 						</h3>

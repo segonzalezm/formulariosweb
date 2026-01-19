@@ -6,13 +6,6 @@ import javax.mail.internet.InternetAddress;
 
 public class EmailUtil {
     public static void enviarCorreo(String destinatario, String asunto, String cuerpo, String remitente) throws Exception {
-        System.out.println("===== EMAILUTIL DEBUG =====");
-        System.out.println("[SENDING] INTENTANDO ENVIAR EMAIL");
-        System.out.println("Remitente: " + remitente);
-        System.out.println("Destinatario: " + destinatario);
-        System.out.println("Asunto: " + asunto);
-        System.out.println("Cuerpo: " + cuerpo.substring(0, Math.min(100, cuerpo.length())));
-        System.out.println("============================");
         
         try {
             InternetAddress to = new InternetAddress(destinatario);
@@ -22,16 +15,11 @@ public class EmailUtil {
             mailMessage.setFrom(from);
             mailMessage.setSubject(asunto);
             mailMessage.setBody(cuerpo);
-            mailMessage.setHTMLFormat(true);
-            
-            System.out.println("Mensaje de correo creado exitosamente");
-            System.out.println("Enviando correo...");
+            mailMessage.setHTMLFormat(true);           
             
             MailServiceUtil.sendEmail(mailMessage);
             
-            System.out.println("[OK] CORREO ENVIADO EXITOSAMENTE a: " + destinatario);
         } catch (Exception e) {
-            System.out.println("[ERROR] AL ENVIAR CORREO: " + e.getMessage());
             e.printStackTrace();
             throw e;
         }

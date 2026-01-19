@@ -34,11 +34,6 @@ public class EnviarFormularioMVCActionCommand extends BaseMVCActionCommand {
 
 	@Override
 	protected void doProcessAction(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
-		System.out.println("\n");
-		System.out.println("================================================================================");
-		System.out.println("*** ENVIAR FORMULARIO MVC ACTION COMMAND - LLAMADO ***");
-		System.out.println("================================================================================");
-		
 		// Obtener parámetros del formulario
 		String nombreApellido = ParamUtil.getString(actionRequest, "nombreApellido", "");
 		String dependencia = ParamUtil.getString(actionRequest, "dependencia", "");
@@ -48,32 +43,17 @@ public class EnviarFormularioMVCActionCommand extends BaseMVCActionCommand {
 		String emailParticular = ParamUtil.getString(actionRequest, "emailParticular", "");
 		String descripcion = ParamUtil.getString(actionRequest, "descripcion", "");
 
-		System.out.println("\n[PARAMS] PARAMETROS RECIBIDOS DEL FORMULARIO:");
-		System.out.println("  [OK] nombreApellido: [" + nombreApellido + "]");
-		System.out.println("  [OK] dependencia: [" + dependencia + "]");
-		System.out.println("  [OK] telefonoCelular: [" + telefonoCelular + "]");
-		System.out.println("  [OK] telefonoParticular: [" + telefonoParticular + "]");
-		System.out.println("  [OK] emailFuncionario: [" + emailFuncionario + "]");
-		System.out.println("  [OK] emailParticular: [" + emailParticular + "]");
-		System.out.println("  [OK] descripcion: [" + descripcion + "]");
-
 		// Obtener configuración desde PortletPreferences
 		PortletPreferences prefs = actionRequest.getPreferences();
 		String destinatarios = prefs.getValue("destinatariosEmail", "");
 		String asunto = prefs.getValue("asuntoEmail", "");
 
-		System.out.println("\n[CONFIG] PARAMETROS DESDE PORTLET PREFERENCES:");
-		System.out.println("  [OK] destinatarios: [" + destinatarios + "]");
-		System.out.println("  [OK] asunto: [" + asunto + "]");
-
 		if (destinatarios == null || destinatarios.trim().isEmpty()) {
 			System.out.println("\n[ERROR] No hay destinatarios disponibles!");
-			System.out.println("================================================================================");
 			return;
 		}
 		if (asunto == null || asunto.trim().isEmpty()) {
 			System.out.println("\n[ERROR] No hay asunto disponible!");
-			System.out.println("================================================================================");
 			return;
 		}
 
@@ -111,10 +91,7 @@ public class EnviarFormularioMVCActionCommand extends BaseMVCActionCommand {
 
 		String remitente = "noreply@contraloria.cl";
 
-		System.out.println("\n[PROCESS] PROCESANDO DESTINATARIOS:");
 		String[] destinatariosArray = destinatarios.split(",");
-		System.out.println("Total de destinatarios a procesar: " + destinatariosArray.length);
-
 		int enviados = 0;
 		int errores = 0;
 
@@ -124,20 +101,16 @@ public class EnviarFormularioMVCActionCommand extends BaseMVCActionCommand {
 				continue;
 			}
 			
-			System.out.println("\n[EMAIL] Intentando enviar a: [" + destinatarioTrimmed + "]");
 			try {
 				EmailUtil.enviarCorreo(destinatarioTrimmed, asunto, cuerpo, remitente);
-				System.out.println("[OK] Correo enviado exitosamente a: " + destinatarioTrimmed);
 				enviados++;
 			} catch (Exception e) {
-				System.out.println("[ERROR] Error al enviar a " + destinatarioTrimmed + ": " + e.getMessage());
 				e.printStackTrace();
 				errores++;
 			}
 		}
 
 		// Enviar copia al usuario que realiza la solicitud
-		System.out.println("\n[COPY] ENVIANDO COPIA AL USUARIO:");
 		String emailUsuario = emailFuncionario;
 		if (emailUsuario != null && !emailUsuario.trim().isEmpty()) {
 			String asuntoCopia = "COPIA SOLICITUD - " + asunto;
@@ -178,11 +151,6 @@ public class EnviarFormularioMVCActionCommand extends BaseMVCActionCommand {
 		} else {
 			System.out.println("[WARNING] No hay email del usuario disponible para enviar copia");
 		}
-
-		System.out.println("\n[SUMMARY] RESUMEN DE ENVIO:");
-		System.out.println("[OK] Correos enviados exitosamente: " + enviados);
-		System.out.println("[ERROR] Errores durante envio: " + errores);
-		System.out.println("================================================================================\n");
 		
 		// Agregar mensaje de éxito o error a la sesión
 		if (errores == 0 && enviados > 0) {
@@ -193,10 +161,8 @@ public class EnviarFormularioMVCActionCommand extends BaseMVCActionCommand {
 		
 		// Post-Redirect-Get: redirigir a la URL actual para evitar reenvío de formulario
 		String redirect = ParamUtil.getString(actionRequest, "redirect");
-		System.out.println("[REDIRECT] URL de redirección: [" + redirect + "]");
 
 		if (redirect != null && !redirect.trim().isEmpty()) {
-			System.out.println("[REDIRECT] Ejecutando redirección...");
 			actionResponse.sendRedirect(redirect);
 		}
 	}
