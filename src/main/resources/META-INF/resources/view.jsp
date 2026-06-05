@@ -15,8 +15,6 @@
 %>
 
 <portlet:resourceURL id="/formularios/getUserData" var="getUserDataURL" />
-<portlet:resourceURL id="/formularios/getPageName" var="getPageNameURL" />
-<portlet:resourceURL id="/formularios/getFuncionarios" var="getFuncionariosURL" />
 
 <div class="container">
 	<div class="row">
@@ -32,6 +30,9 @@
 						// Mostrar mensaje de éxito o error usando SessionMessages
 						boolean showSuccess = SessionMessages.contains(renderRequest, "formulario-enviado-exitosamente");
 						boolean showError = SessionErrors.contains(renderRequest, "error-envio-parcial");
+						boolean showValidationError = SessionErrors.contains(renderRequest, "error-validacion-formulario");
+						boolean showConfigError = SessionErrors.contains(renderRequest, "error-configuracion-formulario");
+						boolean showCaptchaError = SessionErrors.contains(renderRequest, "error-captcha-formulario");
 						
 						if (showSuccess) {
 					%>
@@ -48,6 +49,36 @@
 						<div class="alert alert-danger alert-dismissible fade show" role="alert">
 							<strong><i class="fa fa-exclamation-triangle"></i> Error:</strong> 
 							Algunos correos no pudieron ser enviados
+							<button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+					<%
+						} else if (showValidationError) {
+					%>
+						<div class="alert alert-warning alert-dismissible fade show" role="alert">
+							<strong><i class="fa fa-exclamation-circle"></i> Validación:</strong>
+							Revisa los datos ingresados. Hay campos vacíos o con formato inválido.
+							<button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+					<%
+						} else if (showConfigError) {
+					%>
+						<div class="alert alert-warning alert-dismissible fade show" role="alert">
+							<strong><i class="fa fa-cog"></i> Configuración:</strong>
+							El formulario no tiene destinatarios o asunto configurados. Contacta al administrador.
+							<button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+					<%
+						} else if (showCaptchaError) {
+					%>
+						<div class="alert alert-warning alert-dismissible fade show" role="alert">
+							<strong><i class="fa fa-shield-alt"></i> Verificación:</strong>
+							La validación CAPTCHA falló. Intenta nuevamente.
 							<button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
 								<span aria-hidden="true">&times;</span>
 							</button>

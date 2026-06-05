@@ -1,5 +1,6 @@
 dependencies {
-	compileOnly group: "com.liferay.portal", name: "release.dxp.api"
-
+    compileOnly group: "com.liferay.portal", name: "release.dxp.api"
+    // CAPTCHA será validado en tiempo de ejecución usando reflexión
+    // Si está disponible en el bundle de Liferay, será usado; si no, continuará sin validación
 	cssBuilder group: "com.liferay", name: "com.liferay.css.builder", version: "3.1.4"
 }
